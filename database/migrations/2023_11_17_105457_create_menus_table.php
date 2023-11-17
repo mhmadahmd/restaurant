@@ -15,7 +15,7 @@ return new class() extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('admin_rest_id')->constrained('users', 'id', 'menus_admin_user_id_foreign');
+            $table->foreignId('admin_rest_id')->nullable();
             $table->timestamps();
         });
     }
