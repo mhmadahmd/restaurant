@@ -12,16 +12,16 @@ const props = defineProps({
 
 const classes = computed(() => {
     if (props.mode == "add") {
-        return "bg-blue-600 hover:bg-blue-800";
+        return "bg-emerald-500 hover:bg-emerald-800";
     }
     if (props.mode == "edit") {
-        return "bg-purple-600 hover:bg-purple-800";
+        return "bg-sky-500 hover:bg-sky-800";
     }
     if (props.mode == "delete") {
-        return "bg-red-600 hover:bg-red-800";
+        return "bg-rose-500 hover:bg-rose-800";
     }
     if (props.mode == "view") {
-        return "bg-green-600 hover:bg-green-800";
+        return "bg-amber-500 hover:bg-amber-800";
     }
     return "";
 });
