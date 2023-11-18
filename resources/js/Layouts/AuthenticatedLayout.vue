@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import FlashMessage from '@/Components/FlashMessage.vue';
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -33,7 +34,7 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
                                 <NavLink :href="route('menus.index')" :active="route().current('menus.index')">
-                                    Menu
+                                    Menus
                                 </NavLink>
                             </div>
                         </div>
@@ -119,7 +120,7 @@ const showingNavigationDropdown = ref(false);
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('menus.index')" :active="route().current('menus.index')">
-                            Menu
+                            Menus
                         </ResponsiveNavLink>
                     </div>
 
@@ -144,13 +145,17 @@ const showingNavigationDropdown = ref(false);
 
             <!-- Page Heading -->
             <header class="bg-white dark:bg-gray-800 shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
+                <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
+                    <div :class="$slots.page_actions ? 'flex items-center justify-between' : ''">
+                        <slot name="header" />
+                        <slot name="page_actions" />
+                    </div>
                 </div>
             </header>
 
             <!-- Page Content -->
             <main>
+                <FlashMessage />
                 <slot />
             </main>
         </div>
