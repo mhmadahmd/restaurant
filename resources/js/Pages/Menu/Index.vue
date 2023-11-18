@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head } from '@inertiajs/vue3';
+import AnchorLink from '@/Components/AnchorLink.vue';
 defineProps({
     menus: {
         type: Object,
@@ -23,7 +23,8 @@ defineProps({
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900 dark:text-gray-100 lg:flex lg:items-center lg:justify-between">
                             <span>{{ menu.name }}</span>
-                            <PrimaryButton >Show</PrimaryButton>
+
+                            <AnchorLink :href="route('menus.show', menu.id)" mode="view">Show</AnchorLink>
                         </div>
                     </div>
                 </div>
