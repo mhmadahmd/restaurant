@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class MenuController extends Controller
 {
@@ -12,7 +14,9 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Menu/Index', [
+            'menus' => Menu::where('user_id', Auth::user()->id)->get()
+        ]);
     }
 
     /**
