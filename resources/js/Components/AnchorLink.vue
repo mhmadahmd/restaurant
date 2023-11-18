@@ -30,7 +30,7 @@ const classes = computed(() => {
 <template>
     <Link
         :href="href"
-        class="px-3 py-2 mr-2 rounded text-white text-sm font-bold whitespace-no-wrap"
+        class="px-3 py-2 ml-2 rounded text-white text-sm font-bold whitespace-no-wrap"
         :class="classes"
     >
         <slot />
