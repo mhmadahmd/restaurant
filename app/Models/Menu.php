@@ -18,4 +18,9 @@ class Menu extends Model
         'user_id',
         'admin_rest_id'
     ];
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
 }
