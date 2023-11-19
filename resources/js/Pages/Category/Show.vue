@@ -9,6 +9,7 @@ import { PlusIcon } from "@heroicons/vue/20/solid";
 defineProps({
     category: Object,
     subcategories: Array,
+    items: Array,
     can: Array
 });
 </script>
@@ -22,9 +23,13 @@ defineProps({
         </template>
 
         <template #page_actions>
-            <AnchorLink v-if="can.create_subcategories" :href="route('categories.create')" :data="{parent_id: category.id}">
+            <AnchorLink v-if="can.create_subcategories && !can.create_items" :href="route('categories.create')" :data="{parent_id: category.id}">
                 <PlusIcon class="h-5 w-5 inline" />
-                <span class="hidden md:inline ml-2">Create</span>
+                <span class="hidden md:inline ml-2">Create Sub Category</span>
+            </AnchorLink>
+            <AnchorLink v-if="can.create_items" :href="route('items.create')" :data="{category_id: category.id}">
+                <PlusIcon class="h-5 w-5 inline" />
+                <span class="hidden md:inline ml-2">Create Item</span>
             </AnchorLink>
         </template>
 
@@ -34,6 +39,7 @@ defineProps({
             >
                 <ul role="list" class="divide-y divide-gray-100">
                     <ListItem :items="subcategories" type="category"/>
+                    <ListItem :items="items" type="item"/>
                 </ul>
             </div>
         </div>

@@ -20,12 +20,12 @@ const props = defineProps({
             </h2>
         </div>
         <div>
-            <AnchorLink :href="type == 'menu' ? route('menus.show', item.id) : route('categories.show', item.id)" mode="view">
+            <AnchorLink v-if="type != 'item'" :href="type == 'menu' ? route('menus.show', item.id) : route('categories.show', item.id)" mode="view">
                 <EyeIcon class="h-5 w-5 inline" />
                 <span class="hidden md:inline ml-2">Show</span>
             </AnchorLink>
             <AnchorLink
-                :href="type == 'menu' ? route('menus.destroy', item.id) : route('categories.destroy', item.id)"
+                :href="type == 'menu' ? route('menus.destroy', item.id) : type == 'item' ? route('items.destroy', item.id) : route('categories.destroy', item.id)"
                 method="delete"
                 mode="delete"
             >

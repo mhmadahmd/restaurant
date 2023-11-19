@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -40,12 +41,20 @@ class CategoryController extends Controller
                     'name' => 'required',
                 ]);
         $inputs = $request->all();
-        if(empty($request->input('menu_id'))){
+        if(empty($request->input('menu_id'))) {
             $inputs['menu_id'] = Category::find($request->input('parent_id'))->menu_id;
         }
-        Category::create($inputs);
+        $category = Category::create($inputs);
 
-        return Redirect::route('categories.index')->with('success', 'Created Successfully');
+        return Redirect::route('categories.index')->with(
+            [
+                'can' => [
+                        'create_items' => Category::where('parent_id', $category->id)->doesntExist(),
+                        'create_subcategories' => Category::where('id', $category->id)->has('parent.parent.parent')->doesntExist(),
+                ],
+                'success' => 'Created Successfully'
+            ]
+        );
     }
 
     /**
@@ -53,10 +62,11 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-// dd(Category::where('id', $category->id)->has('parent.parent.parent')->get());
+        // dd(Category::where('id', $category->id)->has('parent.parent.parent')->get());
         return Inertia::render('Category/Show', [
                     'category' => $category,
                     'subcategories' => Category::where('parent_id', $category->id)->get(),
+                    'items' => Item::where('category_id', $category->id)->get(),
                     'can' => [
                         'create_items' => Category::where('parent_id', $category->id)->doesntExist(),
                         'create_subcategories' => Category::where('id', $category->id)->has('parent.parent.parent')->doesntExist(),
@@ -86,7 +96,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
-        return Redirect::route('menus.index')->with('success', 'Deleted Successfully');
+        if(empty($category->parent_id)) {
+
+            $category->delete();
+            return Redirect::route('menus.index')->with('success', 'Deleted Successfully');
+
+        } else {
+            $id = $category->parent_id;
+            $category->delete();
+            return Redirect::route('categories.show', $id)->with('success', 'Deleted Successfully');
+
+        }
+
     }
 }

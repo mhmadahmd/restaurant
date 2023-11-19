@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
 
 class ItemController extends Controller
 {
@@ -20,7 +22,9 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Item/Create', [
+                    'category_id' => request()->input('category_id'),
+                ]);
     }
 
     /**
@@ -28,7 +32,13 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Item::create($request->validate([
+                            'name' => 'required',
+                            'category_id' => 'required'
+                        ]));
+        $id = $request->input('category_id');
+        return Redirect::route('categories.show', $id)->with('success', 'Created Successfully');
+
     }
 
     /**
@@ -60,6 +70,9 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+        $id = $item->category_id;
+        $item->delete();
+        return Redirect::route('categories.show', $id)->with('success', 'Deleted Successfully');
+
     }
 }

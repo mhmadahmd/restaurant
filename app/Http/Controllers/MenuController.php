@@ -19,7 +19,7 @@ class MenuController extends Controller
     {
         return Inertia::render('Menu/Index', [
             'menus' => Menu::where('user_id', Auth::user()->id)->get()
-        ])->can('create-category');
+        ]);
     }
 
     /**

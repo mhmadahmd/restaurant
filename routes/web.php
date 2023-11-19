@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('menus', MenuController::class);
         Route::resource('categories', CategoryController::class);
+        Route::resource('items', ItemController::class);
 
     });
 });
