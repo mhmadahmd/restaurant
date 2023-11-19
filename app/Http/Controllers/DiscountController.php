@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CalculateDiscount;
 use App\Models\Category;
 use App\Models\Discount;
 use App\Models\Item;
@@ -21,7 +22,13 @@ class DiscountController extends Controller
     {
 
         return Inertia::render('Discount/Index', [
-            'menus' => Menu::where('user_id', Auth::user()->id)->with(['discount'])->get()
+            'menus' => Menu::where('user_id', Auth::user()->id)->with(['discount'])->get()->transform(function($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'amount' => optional($item->discount)->amount
+                ];
+            })
         ]);
 
     }
@@ -50,13 +57,27 @@ class DiscountController extends Controller
         if(request()->input('type') == 'menu') {
             return Inertia::render('Discount/Show', [
                         'parent' => Menu::find($id),
-                        'children' => Category::where('menu_id', $id)->WhereNull('parent_id')->with(['discount'])->get(),
+                        'children' => CalculateDiscount::run($id, request()->input('type')),
                         'type' => 'category'
                     ]);
         } else {
             return Inertia::render('Discount/Show', [
                                 'parent' => Category::find($id),
-                                'children' => Category::where('parent_id', $id)->exists() ? Category::where('parent_id', $id)->with(['discount'])->get() : Item::where('category_id', $id)->with(['discount'])->get(),
+                                'children' => Category::where('parent_id', $id)->exists() ?
+                                                Category::where('parent_id', $id)->with(['discount'])->get()->transform(function($item) {
+                                                    return [
+                                                        'id' => $item->id,
+                                                        'name' => $item->name,
+                                                        'amount' => optional($item->discount)->amount
+                                                    ];
+                                                }) :
+                                                Item::where('category_id', $id)->with(['discount'])->get()->transform(function($item) {
+                                                    return [
+                                                        'id' => $item->id,
+                                                        'name' => $item->name,
+                                                        'amount' => optional($item->discount)->amount
+                                                    ];
+                                                }),
                                 'type' => Category::where('parent_id', $id)->exists() ? 'category' : 'item'
                             ]);
         }

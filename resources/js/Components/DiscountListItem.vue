@@ -17,7 +17,7 @@ const props = defineProps({
         <div class="flex min-w-0 gap-x-4 self-center">
             <h2 class="font-semibold text-gray-900 dark:text-gray-100">
                 {{ item.name }}
-                <small class="text-xs leading-5 text-gray-500" v-if="item.discount" > Discount Amount: {{ item.discount.amount }} %</small>
+                <small class="text-xs leading-5 text-gray-500" v-if="item.amount" > Discount Amount: {{ item.amount }} %</small>
             </h2>
         </div>
         <div>
