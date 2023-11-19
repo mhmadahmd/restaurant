@@ -23,4 +23,9 @@ class Menu extends Model
     {
         return $this->hasMany(Category::class);
     }
+
+    public function discount()
+    {
+        return $this->morphOne(Discount::class, 'discountable');
+    }
 }
