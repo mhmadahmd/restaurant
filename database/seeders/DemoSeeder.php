@@ -21,13 +21,22 @@ class DemoSeeder extends Seeder
                 'email' => 'admin@mail.com',
                 'password' => Hash::make('password')
             ]
-    );
+        );
+
+        $user2 = User::firstOrCreate(
+            [ 'name' => 'Restaurant Admin' ],
+            [
+                'email' => 'restaurantadmin@mail.com',
+                'password' => Hash::make('password')
+            ]
+        );
 
         $user->assignRole('admin');
 
         Menu::create([
             'name' => $user->name . " Menu",
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'admin_rest_id' => $user2->id
         ]);
     }
 }
