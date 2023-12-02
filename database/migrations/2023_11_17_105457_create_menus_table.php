@@ -14,7 +14,7 @@ return new class() extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('admin_rest_id')->nullable();
             $table->timestamps();
         });
