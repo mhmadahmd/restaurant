@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -14,7 +15,12 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        $cat = request()->input('c');
+        return Inertia::render('Item/Index', [
+            'list' => Item::where('category_id', $cat)->get(),
+            'category' => Category::find($cat)
+        ]);
+
     }
 
     /**
@@ -22,8 +28,11 @@ class ItemController extends Controller
      */
     public function create()
     {
+        $category = Category::isLeaf()->find(request()->input('c'));
+        abort_if(empty($category), 404, "Requested Category Not Found");
+
         return Inertia::render('Item/Create', [
-                    'category_id' => request()->input('category_id'),
+                    'category_id' => $category->id,
                 ]);
     }
 
@@ -36,33 +45,7 @@ class ItemController extends Controller
                             'name' => 'required',
                             'category_id' => 'required'
                         ]));
-        $id = $request->input('category_id');
-        return Redirect::route('categories.show', $id)->with('success', 'Created Successfully');
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Item $item)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Item $item)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Item $item)
-    {
-        //
+        return Redirect::route('items.index', ['c' => $request->input('category_id')])->with('success', 'Created Successfully');
     }
 
     /**
@@ -72,7 +55,7 @@ class ItemController extends Controller
     {
         $id = $item->category_id;
         $item->delete();
-        return Redirect::route('categories.show', $id)->with('success', 'Deleted Successfully');
+        return Redirect::route('items.index', ['c' => $id])->with('success', 'Deleted Successfully');
 
     }
 }

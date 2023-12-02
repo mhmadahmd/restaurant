@@ -52,33 +52,6 @@ class MenuController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Menu $menu)
-    {
-        return Inertia::render('Menu/Show', [
-            'menu' => $menu,
-            'categories' => Category::where('menu_id', $menu->id)->WhereNull('parent_id')->get()
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Menu $menu)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Menu $menu)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Menu $menu)

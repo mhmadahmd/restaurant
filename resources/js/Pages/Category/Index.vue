@@ -6,12 +6,8 @@ import TreeList from "@/Components/TreeList.vue";
 import { PlusIcon } from "@heroicons/vue/20/solid";
 
 defineProps({
-    tree: {
-        type: Array,
-    },
-    menu_id: {
-        type: Number
-    }
+    tree: Array,
+    menu: Object
 });
 </script>
 
@@ -23,12 +19,12 @@ defineProps({
             <h2
                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
             >
-                Category Tree
+                Category Tree - {{ menu.name }}
             </h2>
         </template>
 
         <template #page_actions>
-            <AnchorLink :href="route('categories.create')" :data="{menu: menu_id}" >
+            <AnchorLink :href="route('categories.create')" :data="{m: menu.id}" >
                 <PlusIcon class="h-5 w-5 inline" />
                 <span class="hidden md:inline ml-2">Create</span>
             </AnchorLink>

@@ -58,7 +58,7 @@ function submit() {
                             />
                         </div>
 
-                        <input type="hidden" name="menu_id" v-model="form.category_id">
+                        <input type="hidden" name="category_id" v-model="form.category_id">
 
                         <div class="mt-6 flex justify-end">
                             <PrimaryButton

@@ -6,9 +6,7 @@ import ListItem from "@/Components/ListItem.vue";
 import { PlusIcon } from "@heroicons/vue/20/solid";
 
 defineProps({
-    menus: {
-        type: Object,
-    },
+    menus: Array,
 });
 </script>
 

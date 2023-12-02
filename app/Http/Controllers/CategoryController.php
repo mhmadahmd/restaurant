@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -24,7 +25,7 @@ class CategoryController extends Controller
 
         return Inertia::render('Category/Index', [
             'tree' => $tree->toTree()->toArray(),
-            'menu_id' => $menu
+            'menu' => Menu::find($menu)
         ]);
     }
 
@@ -33,11 +34,13 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $menu = request()->input('menu');
-        $query = Category::where('menu_id', $menu)->tree(2)->doesntHave('items')->get();
+        $menu = Menu::find(request()->input('m'));
+        abort_if(empty($menu), 404);
+
+        $query = Category::where('menu_id', $menu->id)->tree(2)->doesntHave('items')->get();
         return Inertia::render('Category/Create', [
             'categories' => $query->toArray(),
-            'menu_id' => $menu,
+            'menu_id' => $menu->id,
         ]);
     }
 

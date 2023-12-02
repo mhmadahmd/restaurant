@@ -16,7 +16,7 @@ const props = defineProps({
                 </h2>
             </div>
             <div>
-                <AnchorLink :href="route('categories.show', item.id)" mode="view">
+                <AnchorLink :href="route('items.index')" :data="{c: item.id}" mode="view" v-if="!item.children.length">
                     <EyeIcon class="h-5 w-5 inline" />
                     <span class="hidden md:inline ml-2">Show</span>
                 </AnchorLink>
