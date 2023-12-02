@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Permission\Middleware\RoleMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,9 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+require __DIR__ . '/auth.php';
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -38,14 +42,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::group(['middleware' => [\Spatie\Permission\Middleware\RoleMiddleware::using('super-admin|admin')]], function () {
-
+    Route::group(['middleware' => [RoleMiddleware::using('super-admin|admin')]], function () {
         Route::resource('menus', MenuController::class)->except(['edit', 'update', 'show']);
         Route::resource('categories', CategoryController::class)->except(['edit', 'update', 'show']);
         Route::resource('items', ItemController::class)->except(['edit', 'update', 'show']);
-        Route::resource('discounts', DiscountController::class);
+    });
 
+    Route::group(['middleware' => [RoleMiddleware::using('super-admin|restaurant-admin')]], function () {
+        Route::resource('discounts', DiscountController::class);
     });
 });
 
-require __DIR__ . '/auth.php';
+

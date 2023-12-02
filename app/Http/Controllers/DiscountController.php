@@ -22,7 +22,7 @@ class DiscountController extends Controller
     {
 
         return Inertia::render('Discount/Index', [
-            'menus' => Menu::where('user_id', Auth::user()->id)->with(['discount'])->get()->transform(function($item) {
+            'menus' => Menu::where('admin_rest_id', Auth::user()->id)->with(['discount'])->get()->transform(function($item) {
                 return [
                     'id' => $item->id,
                     'name' => $item->name,

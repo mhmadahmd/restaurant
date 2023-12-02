@@ -33,10 +33,10 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('menus.index')" :active="route().current('menus.index')">
+                                <NavLink :href="route('menus.index')" :active="route().current('menus.index')" v-if="$page.props.can.menus">
                                     Menus
                                 </NavLink>
-                                <NavLink :href="route('discounts.index')" :active="route().current('discounts.index')">
+                                <NavLink :href="route('discounts.index')" :active="route().current('discounts.index')" v-if="$page.props.can.discounts">
                                     Discounts
                                 </NavLink>
                             </div>
@@ -122,10 +122,10 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('menus.index')" :active="route().current('menus.index')">
+                        <ResponsiveNavLink :href="route('menus.index')" :active="route().current('menus.index')"  v-if="$page.props.can.menus">
                             Menus
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('discounts.index')" :active="route().current('discounts.index')">
+                        <ResponsiveNavLink :href="route('discounts.index')" :active="route().current('discounts.index')" v-if="$page.props.can.discounts">
                             Discounts
                         </ResponsiveNavLink>
                     </div>

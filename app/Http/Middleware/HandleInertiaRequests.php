@@ -35,6 +35,10 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'can' => [
+                'menus' => optional($request->user())->hasAnyRole(['super-admin', 'admin']),
+                'discounts' => optional($request->user())->hasAnyRole(['super-admin', 'restaurant-admin']),
+            ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
