@@ -9,13 +9,13 @@ import { Head, useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
     menu_id: Number,
-    parent_id: Number,
+    categories: Array
 });
 
 const form = useForm({
     name: "",
     menu_id: props.menu_id,
-    parent_id: props.parent_id,
+    parent_id: ""
 });
 
 function submit() {
@@ -62,8 +62,17 @@ function submit() {
                             />
                         </div>
 
+                        <div class="mt-6">
+                            <InputLabel for="parent_id" value="Parent Category" />
+
+                            <Select
+                                id="parent_id"
+                                v-model:selected="form.parent_id"
+                                :items="categories"
+                            />
+                        </div>
+
                         <input type="hidden" name="menu_id" v-model="form.menu_id">
-                        <input type="hidden" name="parent_id" v-model="form.parent_id">
 
                         <div class="mt-6 flex justify-end">
                             <PrimaryButton

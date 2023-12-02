@@ -16,7 +16,16 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $menu = request()->input('m');
+        $constraint = function ($query) use ($menu) {
+            $query->whereNull('parent_id')->where('menu_id', $menu);
+        };
+        $tree = Category::with(['discount', 'items'])->treeOf($constraint)->get();
+
+        return Inertia::render('Category/Index', [
+            'tree' => $tree->toTree()->toArray(),
+            'menu_id' => $menu
+        ]);
     }
 
     /**
@@ -24,12 +33,12 @@ class CategoryController extends Controller
      */
     public function create()
     {
-
+        $menu = request()->input('menu');
+        $query = Category::where('menu_id', $menu)->tree(2)->doesntHave('items')->get();
         return Inertia::render('Category/Create', [
-                    'menu_id' => request()->input('menu_id'),
-                    'parent_id' => request()->input('parent_id'),
-                ]);
-
+            'categories' => $query->toArray(),
+            'menu_id' => $menu,
+        ]);
     }
 
     /**
@@ -39,56 +48,17 @@ class CategoryController extends Controller
     {
         $request->validate([
                     'name' => 'required',
+                    'menu_id' => 'required',
                 ]);
         $inputs = $request->all();
-        if(empty($request->input('menu_id'))) {
-            $inputs['menu_id'] = Category::find($request->input('parent_id'))->menu_id;
-        }
+
         $category = Category::create($inputs);
 
-        return Redirect::route('categories.index')->with(
+        return Redirect::route('categories.index', ['m' => $inputs['menu_id']])->with(
             [
-                'can' => [
-                        'create_items' => Category::where('parent_id', $category->id)->doesntExist(),
-                        'create_subcategories' => Category::where('id', $category->id)->has('parent.parent.parent')->doesntExist(),
-                ],
                 'success' => 'Created Successfully'
             ]
         );
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
-    {
-        // dd(Category::where('id', $category->id)->has('parent.parent.parent')->get());
-        return Inertia::render('Category/Show', [
-                    'category' => $category,
-                    'subcategories' => Category::where('parent_id', $category->id)->get(),
-                    'items' => Item::where('category_id', $category->id)->get(),
-                    'can' => [
-                        'create_items' => Category::where('parent_id', $category->id)->doesntExist(),
-                        'create_subcategories' => Category::where('id', $category->id)->has('parent.parent.parent')->doesntExist(),
-                    ]
-                ]);
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
-    {
-        //
     }
 
     /**
@@ -96,17 +66,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if(empty($category->parent_id)) {
-
-            $category->delete();
-            return Redirect::route('menus.index')->with('success', 'Deleted Successfully');
-
-        } else {
-            $id = $category->parent_id;
-            $category->delete();
-            return Redirect::route('categories.show', $id)->with('success', 'Deleted Successfully');
-
-        }
-
+        Category::find($category->id)->descendantsAndSelf()->delete();
+        return Redirect::route('categories.index', ['m' => $category->menu_id])->with('success', 'Deleted Successfully');
     }
 }

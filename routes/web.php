@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => [\Spatie\Permission\Middleware\RoleMiddleware::using('super-admin|admin')]], function () {
 
         Route::resource('menus', MenuController::class);
-        Route::resource('categories', CategoryController::class);
+        Route::resource('categories', CategoryController::class)->except(['edit', 'update', 'show']);
         Route::resource('items', ItemController::class);
         Route::resource('discounts', DiscountController::class);
 
