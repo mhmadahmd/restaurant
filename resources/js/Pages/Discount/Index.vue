@@ -1,9 +1,7 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
-import AnchorLink from "@/Components/AnchorLink.vue";
 import DiscountListItem from "@/Components/DiscountListItem.vue";
-import { PlusIcon } from "@heroicons/vue/20/solid";
 
 defineProps({
     menus: {

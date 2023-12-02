@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::group(['middleware' => [RoleMiddleware::using('super-admin|restaurant-admin')]], function () {
-        Route::resource('discounts', DiscountController::class);
+        Route::resource('discounts', DiscountController::class)->except(['create', 'store', 'destroy']);
     });
 });
 
