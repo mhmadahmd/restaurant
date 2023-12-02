@@ -57,7 +57,13 @@ class DiscountController extends Controller
         if(request()->input('type') == 'menu') {
             return Inertia::render('Discount/Show', [
                         'parent' => Menu::find($id),
-                        'children' => CalculateDiscount::run($id, request()->input('type')),
+                        'children' => Category::where('menu_id', $id)->WhereNull('parent_id')->with(['discount'])->get()->transform(function ($item) use ($id) {
+                            return [
+                                'id' => $item->id,
+                                'name' => $item->name,
+                                'amount' => CalculateDiscount::run($item->id, request()->input('type'))
+                            ];
+                        }),
                         'type' => 'category'
                     ]);
         } else {
@@ -68,14 +74,14 @@ class DiscountController extends Controller
                                                     return [
                                                         'id' => $item->id,
                                                         'name' => $item->name,
-                                                        'amount' => optional($item->discount)->amount
+                                                        'amount' => CalculateDiscount::run($item->id, 'menu')
                                                     ];
                                                 }) :
                                                 Item::where('category_id', $id)->with(['discount'])->get()->transform(function($item) {
                                                     return [
                                                         'id' => $item->id,
                                                         'name' => $item->name,
-                                                        'amount' => optional($item->discount)->amount
+                                                        'amount' => CalculateDiscount::run($item->id, 'item')
                                                     ];
                                                 }),
                                 'type' => Category::where('parent_id', $id)->exists() ? 'category' : 'item'

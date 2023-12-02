@@ -4,6 +4,8 @@ namespace App\Actions;
 
 use App\Models\Category;
 use App\Models\Discount;
+use App\Models\Item;
+use App\Models\Menu;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CalculateDiscount
@@ -13,30 +15,55 @@ class CalculateDiscount
     public function handle($id, $type)
     {
         if($type == 'menu') {
-            return Category::where('menu_id', $id)->WhereNull('parent_id')->with(['discount'])->get()->transform(function ($item) use ($id) {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'amount' => empty($item->discount) ?
-                        optional($item->discount = Discount::where('discountable_id', $id)->where('discountable_type', 'App\Models\Menu')->first())->amount :
-                        $item->discount->amount
-                ];
-            });
-        } else {
-            // Category::where('parent_id', $id)->exists() ?  : Item::where('category_id', $id)->with(['discount'])->get()
-            // Category
-            if(Category::where('parent_id', $id)->exists()) {
-                // dd(Category::tree(4)->get());
-                return Category::where('parent_id', $id)->with(['discount', 'parent.discount'])->get()->transform(function ($item) use ($id) {
-                    return [
-                        'id' => $item->id,
-                        'name' => $item->name,
-                        'amount' => empty($item->discount) ?
-                            optional($item->discount = Discount::where('discountable_id', $id)->where('discountable_type', 'App\Models\Menu')->first())->amount :
-                            $item->discount->amount
-                    ];
-                });
+
+            $has_discount = Category::has('discount')->find($id);
+
+            if($has_discount) {
+                return $has_discount->discount->amount;
+            } else {
+                $category = Category::find($id);
+                $menu = Menu::with(['discount'])->find($category->menu_id);
+
+                if(!empty(Category::isRoot()->find($id))) {
+                    return optional($menu->discount)->amount;
+                } else {
+                    foreach($category->ancestors as $ancestor) {
+                        if(!empty($ancestor->discount)) {
+                            return $ancestor->discount->amount;
+                        }
+                    }
+                }
+
+                return optional($menu->discount)->amount;
+
             }
+        } else {
+            $has_discount = Item::has('discount')->find($id);
+
+            if($has_discount) {
+                return $has_discount->discount->amount;
+            } else {
+                $item = Item::find($id);
+                $parent = Category::with(['discount'])->find($item->category_id);
+                $menu = Menu::with(['discount'])->find($parent->menu_id);
+
+                if(!empty($parent->discount)){
+                    return $parent->discount->amount;
+                } else {
+                    if(empty($parent->parent_id)){
+                        return optional($menu->discount)->amount;
+                    } else {
+                        foreach($parent->ancestors as $ancestor) {
+                            if(!empty($ancestor->discount)) {
+                                return $ancestor->discount->amount;
+                            }
+                        }
+
+                    }
+                }
+                return optional($menu->discount)->amount;
+            }
+
         }
     }
 }

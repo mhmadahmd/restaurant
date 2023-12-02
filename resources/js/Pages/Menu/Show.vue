@@ -2,23 +2,29 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import AnchorLink from '@/Components/AnchorLink.vue';
-import DiscountListItem from "@/Components/DiscountListItem.vue";
+import ListItem from "@/Components/ListItem.vue";
 import { PlusIcon } from "@heroicons/vue/20/solid";
 
 
 defineProps({
-    parent: Object,
-    children: Array,
-    type: String
+    menu: Object,
+    categories: Array,
 });
 </script>
 
 <template>
-    <Head title="Discount" />
+    <Head title="Menu" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Discount - {{ parent ? parent.name : ''}}</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ menu.name }}</h2>
+        </template>
+
+        <template #page_actions>
+            <AnchorLink :href="route('categories.create')" :data="{menu_id: menu.id}">
+                <PlusIcon class="h-5 w-5 inline" />
+                <span class="hidden md:inline ml-2">Create</span>
+            </AnchorLink>
         </template>
 
         <div class="py-12">
@@ -26,7 +32,7 @@ defineProps({
                 class="max-w-7xl mx-auto bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
             >
                 <ul role="list" class="divide-y divide-gray-100">
-                    <DiscountListItem :items="children" :type="type"/>
+                    <ListItem :items="categories" type="category"/>
                 </ul>
             </div>
         </div>
