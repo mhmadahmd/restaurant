@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMenuRequest;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\User;
@@ -37,13 +38,9 @@ class MenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMenuRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'admin_rest_id' => 'required'
-        ]);
-        $inputs = $request->all();
+        $inputs = $request->validated();
         $inputs['user_id'] = Auth::user()->id;
         Menu::create($inputs);
 

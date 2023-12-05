@@ -49,15 +49,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-                    'name' => 'required',
-                    'menu_id' => 'required',
-                ]);
-        $inputs = $request->all();
+Category::create($request->validated());
 
-        $category = Category::create($inputs);
-
-        return Redirect::route('categories.index', ['m' => $inputs['menu_id']])->with(
+        return Redirect::route('categories.index', ['m' => $request->input('menu_id')])->with(
             [
                 'success' => 'Created Successfully'
             ]

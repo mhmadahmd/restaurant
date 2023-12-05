@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreItemRequest;
 use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
@@ -39,12 +40,9 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreItemRequest $request)
     {
-        Item::create($request->validate([
-                            'name' => 'required',
-                            'category_id' => 'required'
-                        ]));
+        Item::create($request->validated());
         return Redirect::route('items.index', ['c' => $request->input('category_id')])->with('success', 'Created Successfully');
     }
 

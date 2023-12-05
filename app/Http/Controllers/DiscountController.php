@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\CalculateDiscount;
+use App\Http\Requests\UpdateDiscountRequest;
 use App\Models\Category;
 use App\Models\Discount;
 use App\Models\Item;
@@ -91,18 +92,16 @@ class DiscountController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateDiscountRequest $request, $id)
     {
         $type = request()->input('type') == 'menu' ? 'App\Models\Menu' : (request()->input('type') == 'category' ? 'App\Models\Category' : 'App\Models\Item');
 
-        $request->validate(['amount' => 'required']);
-
-        $amount = $request->input('amount');
+        $data = $request->validated();
 
         DB::table('discounts')
             ->updateOrInsert(
                 ['discountable_id' => $id, 'discountable_type' => $type],
-                ['amount' => $amount]
+                ['amount' => $data['amount']]
             );
 
         return Redirect::route('discounts.index')->with('success', 'Updated Successfully');
